@@ -5,7 +5,7 @@ function App() {
 	return (
 		<div className={styles.app}>
 			<h1 className={styles.title}>Прилучи котика</h1>
-			<CatCard />
+			<CatCard refrashTime={5} />
 		</div>
 	)
 }

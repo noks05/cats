@@ -1,24 +1,28 @@
 // src/CatCard.tsx
 
-import { useEffect, useState, type ChangeEvent } from 'react'
+import { useEffect, useState, type ChangeEvent, type FC } from 'react'
 import { useFetching } from '../../helpers/utils/useFetching'
 import CatOptions from '../CatOptions/CatOptions'
 import { DefaultButton } from '../DefaultButton/DefaultButton'
 import styles from './index.module.css'
 
-const options = [
-	{ name: 'enabled', label: 'Включён' },
-	{ name: 'refrash', label: 'Автообновление каждые 5 секунд' },
-] as const
-
-type TOptionsNames = (typeof options)[number]['name']
-type TOptionStatus = Record<TOptionsNames, boolean>
+interface ICatCardProps {
+	refrashTime?: number
+}
 
 const URL_CATS = 'https://api.thecatapi.com/v1/images/search'
 const API_KEY =
 	'live_xErBUZHyqu4NW321qw9ePkmbZMG1Jpa3Qf4jlxzTxUHKQPpn54kfI3HsBQe7ikDo'
 
-const CatCard = () => {
+const CatCard: FC<ICatCardProps> = ({ refrashTime = 5 }) => {
+	const options = [
+		{ name: 'enabled', label: 'Включён' },
+		{ name: 'refrash', label: `Автообновление каждые ${refrashTime} секунд` },
+	] as const
+
+	type TOptionsNames = (typeof options)[number]['name']
+	type TOptionStatus = Record<TOptionsNames, boolean>
+
 	const [stateOptions, setStateOptions] = useState<TOptionStatus>({
 		enabled: true,
 		refrash: false,
@@ -47,7 +51,7 @@ const CatCard = () => {
 		if (stateOptions.refrash) {
 			const interval = setInterval(() => {
 				fetching()
-			}, 5000)
+			}, refrashTime * 1000)
 			return () => clearInterval(interval)
 		}
 	}, [stateOptions.refrash])
